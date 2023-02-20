@@ -13,7 +13,7 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.payment_id
+        return f'{self.payment_id} | {self.user} | {self.payment_method} | {self.created_at} '
 
     class Meta:
         verbose_name = 'payment'
