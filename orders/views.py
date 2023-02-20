@@ -1,9 +1,13 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 import datetime
 from carts.models import CartItem
 from orders.forms import OrderForm
 from orders.models import Order
 from django.http import HttpResponse
+
+
+def payments(request):
+    return render(request, 'store/payments.html')
 
 
 def place_order(request, total=0, quantity=0, ):
@@ -53,6 +57,14 @@ def place_order(request, total=0, quantity=0, ):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-            return redirect('checkout')
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+            context = {
+                'order': order,
+                'cart_items': cart_items,
+                'total': total,
+                'tax': tax,
+                'grand_total': grand_total,
+            }
+            return render(request, 'store/payments.html', context)
     else:
         return redirect('checkout')
